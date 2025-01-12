@@ -1,0 +1,15 @@
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\bin\Debug\net6.0\Programmers.exe
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\bin\Debug\net6.0\Programmers.deps.json
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\bin\Debug\net6.0\Programmers.runtimeconfig.json
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\bin\Debug\net6.0\Programmers.dll
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\bin\Debug\net6.0\Programmers.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.csproj.AssemblyReference.cache
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.AssemblyInfoInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.AssemblyInfo.cs
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.csproj.CoreCompileInputs.cache
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.dll
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\refint\Programmers.dll
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.pdb
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\Programmers.genruntimeconfig.cache
+C:\Users\every\OneDrive\바탕 화면\Project\CodeTest\Programmers\Programmers\obj\Debug\net6.0\ref\Programmers.dll
