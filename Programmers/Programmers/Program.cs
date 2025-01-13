@@ -9,22 +9,163 @@ using System.Text;
 
 namespace Programmers;
 
-public class Runner
-{
-    public string solution(string letter)
-    {
-        return string.Empty;
-    }
-}
-
 class Program
 {
-    private static Runner _runner = new Runner();
+    private static List<Runner> _runners = new List<Runner>();
     
     static void Main(string[] args)
     {
-       Console.WriteLine(_runner.solution(""));
+        _runners.Add(new NumberRunner());
+        
+        foreach (var runner in _runners)
+        {
+            runner.Solution();
+        }
     }
+    
+    public int 카테고리별로조합하는경우의수(string[,] clothes)
+    {
+        var dic = new Dictionary<string, List<string>>();
+        
+        for (int i = 0; i < clothes.GetLength(0); i++) // 행 순회
+        {
+            var category = clothes[i, 1];
+            if (dic.TryGetValue(category, out var list))
+            {
+                list = new List<string>();
+                dic.Add(category, list);
+            }
+            
+            dic[category].Add(clothes[i, 0]);
+        }
+
+        // 특정 카테고리에서 아이템이 N개 있다면, 해당 카테고리를 선택하는 경우는 N + 1
+        // 아이템을 선택하는 경우, 해당 카테고리를 선택하지 않는 경우 
+        // 아무것도 착용하지 않는 경우를 제외함
+        var answer = 1;
+        foreach (KeyValuePair<string, List<string>> pair in dic)
+        {
+            answer *= (pair.Value.Count + 1);
+        }
+        return answer - 1;
+    }
+    
+    private long 조합공식(int n, int r)
+    {
+        // 뽑을 것이 없거나, 이미 있는것과 뽑을 것의 개수가 같은 경우
+        if (r == 0 || n == r)
+            return 1;
+
+        // n개의 항목 중 r개를 고르는 경우의 수와, n개의 항목중 n-r개를 고르는 경우의 수가 동일함
+        r = Math.Min(r, n - r);
+        long result = 1;
+
+        for (int i = 1; i <= r; i++)
+            result = result * (n - i + 1) / i;
+
+        return result;
+    }
+    
+    // 배열의 크기를 계산할 때
+    // var arr = new string[(my_str.Length + n - 1)/n];
+    public string[] 잘라서배열로저장하기(string my_str, int n)
+    {
+        var remain = my_str.Length % n;
+        var divide = my_str.Length / n;
+        var arr = new string[divide + (remain > 0 ? 1 : 0)];
+        for (int i = 0; i < divide; i++)
+            arr[i] = my_str.Substring(i * n, n);
+        
+        if (remain > 0)
+            arr[divide] = my_str.Substring(divide * n, remain);
+        
+        return arr;
+    }
+    
+    // Convert.ToInt32(str, 2)를 하면 문자열을 정수로 변환할 때 2진법으로 표현된 숫자로 나타나게됨
+    public string 이진수의합으로구하기(string bin1, string bin2) {
+        var num1 = Convert.ToInt32(bin1, 2);
+        var num2 = Convert.ToInt32(bin2, 2);
+        
+        var sum = num1 + num2;
+        return Convert.ToString(sum, 2);
+    }
+    
+    // 소인수분해란 어떤 수를 소수들의 곱으로 표현하는 것 
+    // 12 => 2 * 2 * 3 따라서 12의 소인수는 2와3
+    public List<int> 소인수분해(int n)
+    {
+        var list = new List<int>();
+        int divide = 2;
+
+        while (n > 1)
+        {
+            while (n % divide == 0)
+            {
+                list.Add(n);
+                n /= divide;
+            }
+            
+            divide++;
+            if (divide * divide > n)
+            {
+                if (n > 1)
+                {
+                    list.Add(n);
+                    break;
+                }
+            }
+        }
+
+        return list;
+    }
+    
+    
+    // char - '0'을 하면 숫자로 계산할 수 있음
+    
+    // linq Count는 개수를 세는데 사용함
+    
+    // Array.Sort가 Linq보다 나음
+    // Array.Sort는 퀵소트, 히소트 알고리즘을 사용하여 nLogn의 복잡도를 가지고, 배열을 제자리에서 정렬함으로 추가 메모리 할당이 없음
+    // Linq는 안정 정렬 알고리즘을 사용하는데, 추가적인 메모리할당과 객체 생성이 발생함
+    
+    // my_string안의 자연수들의 합, 연속된 숫자 
+    // char는 '0' ~ '9' 에 대한 부등호가 가능, '0'을 빼면 숫자가 나옴
+    public int 문자열에서자연수의합구하기(string my_string)
+    {
+        int number = 0;
+        int sum = 0;
+        foreach (var c in my_string)
+        {
+            if (c >= '0' && c <= '9')
+            {
+                number = number * 10 + (c - '0');
+            }
+            else
+            {
+                sum += number;
+                number = 0;
+            }
+        }
+
+        // 마지막이 숫자로 끝나는 경우에 대한 예외처리가 필요함
+        sum += number;
+
+        return sum;
+    }
+    
+    //정수n이 주어질때 n을 넘지않는 최대 정수
+    public int 팩토리얼계산(int n) {
+        var result = 1;
+        var i = 1;
+        while (result <= n)
+        {
+            i++;
+            result *= i;
+        }
+
+        return i - 1;
+    }    
     
     // 약수의 개수가 3개 이상인 수를 합성수라고함
     private static bool 합성수구하기(int num)
