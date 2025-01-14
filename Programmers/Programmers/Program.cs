@@ -17,6 +17,7 @@ class Program
     {
         Runners.Add(new NumberRunner());
         Runners.Add(new GraphRunner());
+        Runners.Add(new TreeRunner());
         
         foreach (var runner in Runners)
         {
