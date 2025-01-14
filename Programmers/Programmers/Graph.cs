@@ -331,6 +331,39 @@ public static class Graph
     //  1) 전체 간선 E개를 하나씩 확인
     //  2) 각 간선을 거쳐 다른 노드로 가는 비용을 계산하여 최단 거리 테이블을 갱신
     // 음수 간선 순환이 발생하는지 체크하고 싶다면 3번의 과정을 수행, 최단 거리 테이블이 갱신 되면 음수 간선이 존재
+    // 다익스트라 알고리즘이 매번 방문하지 않는 노드 중에서 최단 거리가 가장 짧은 노드를 선택하는 것과 달리
+    // 벨만 포드 알고리즘은 매번 모든 간선을 확인
+    public static (bool hasNegativeCycle, Dictionary<int, int>) BellmanFord(Dictionary<int, List<(int, int)>> graph, int startNode)
+    {
+        // 최단 거리 테이블 설정
+        var dicDistance = new Dictionary<int, int>();
+        foreach (var node in graph.Keys)
+            dicDistance.Add(node, node == startNode ? 0 : int.MaxValue);
+        
+        // 그래프에서 최단 경로는 최대 (node 수 - 1) 개의 간선으로 구성됨
+        for (int i = 0; i < graph.Count - 1; i++)
+        {
+            foreach (var node in graph.Keys)
+            {
+                foreach (var (end, weight) in graph[node])
+                {
+                    if (dicDistance[node] != int.MaxValue && dicDistance[node] + weight < dicDistance[end])
+                        dicDistance[end] = dicDistance[node] + weight;
+                }
+            }
+        }
+        
+        // 음수 사이클 검사
+        foreach (var node in graph.Keys)
+        {
+            foreach (var (target, weight) in graph[node])
+            {
+                if (dicDistance[node] != int.MaxValue && dicDistance[node] + weight < dicDistance[target])
+                    return (true, dicDistance); // 음수 사이클 존재
+            }
+        }
 
+        return (false, dicDistance); // 음수 사이클 없음
+    }
     #endregion Bellman-Ford
 }

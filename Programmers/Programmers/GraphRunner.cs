@@ -45,6 +45,11 @@ public class GraphRunner : Runner
         Console.WriteLine($"{nameof(dijkstra)}: {string.Join(",", dijkstra)}");
         End($"{nameof(dijkstra)}");
         
+        var (isCycle, bellmanFord) = Graph.BellmanFord(directedGraph, 1);
+        Start($"{nameof(bellmanFord)}");
+        Console.WriteLine($"{nameof(bellmanFord)}: {isCycle} - {string.Join(",", bellmanFord)}");
+        End($"{nameof(bellmanFord)}");
+        
         var nodeCount = 6; // 노드 수
         var edges = new List<(int, int, int)> // (시작 노드, 끝 노드, 가중치)
         {
