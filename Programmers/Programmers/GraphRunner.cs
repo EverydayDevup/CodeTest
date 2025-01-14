@@ -44,5 +44,39 @@ public class GraphRunner : Runner
         Start($"{nameof(dijkstra)}");
         Console.WriteLine($"{nameof(dijkstra)}: {string.Join(",", dijkstra)}");
         End($"{nameof(dijkstra)}");
+        
+        var nodeCount = 6; // 노드 수
+        var edges = new List<(int, int, int)> // (시작 노드, 끝 노드, 가중치)
+        {
+            (0, 1, 4), // A-B, 가중치 4
+            (0, 2, 4), // A-C, 가중치 4
+            (1, 2, 2), // B-C, 가중치 2
+            (1, 3, 5), // B-D, 가중치 5
+            (2, 3, 8), // C-D, 가중치 8
+            (2, 4, 10), // C-E, 가중치 10
+            (3, 4, 2), // D-E, 가중치 2
+            (3, 5, 6), // D-F, 가중치 6
+            (4, 5, 3)  // E-F, 가중치 3
+        };
+        
+        var kruskal = Graph.Kruskal(edges, nodeCount);
+        Start($"{nameof(kruskal)}");
+        Console.WriteLine($"{nameof(kruskal)}: {string.Join(",", kruskal)}");
+        End($"{nameof(kruskal)}");
+
+        var topologicalEdges = new List<(int, int)>
+        {
+            (0, 2), // A → C
+            (1, 2), // B → C
+            (1, 3), // B → D
+            (2, 4), // C → E
+            (3, 5), // D → F
+            (4, 5) // E → F
+        };
+        
+        var topological = Graph.TopologicalSort(nodeCount, topologicalEdges);
+        Start($"{nameof(topological)}");
+        Console.WriteLine($"{nameof(topological)}: {string.Join(",", topological)}");
+        End($"{nameof(topological)}");
     }
 }

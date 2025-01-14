@@ -139,8 +139,9 @@ public static class Graph
 
         return dicDistance;
     }
-    #endregion Dijkstra 
-    
+    #endregion Dijkstra
+
+    #region FloydWarshall
     // 플로이드워셜알고리즘
     // 모든 노드에서 다른 모든 노드까지의 최단 경로를 모두 계산
     // 거쳐가는 노드를 기준으로 알고리즘을 수행
@@ -178,4 +179,158 @@ public static class Graph
 
         return dist;
     }
+    
+    #endregion FloydWarshall
+
+    #region Kruskal
+    // 최소 신장 트리 : 그래프에서 모든 노드를 포함하면서 사이클이 존재하지 않는 부분 그래프
+    // 최소한의 비용으로 구성되는 신장 트리를 찾아야 할 때 
+    // ex) N개의 도시가 존재하는 상황에서 두 도시 사이에 도로를 놓아 전체 도시가 서로 연결될 수 있도록 도로를 설치하는 경우
+    // 크루스칼 알고리즘
+    // 알고리즘
+    // 1. 간선 데이터를 비용에 따라 오름차순으로 정렬
+    // 2. 간선을 하나씩 확인하여 현재의 간선이 사이클을 발생시키는지 확인
+    // (서로소집합을 사용하여, 노드의 부모가 같은지 확인. 같으면 사이클이 발생한 것)
+    //  1) 사이클이 발생하지 않는 경우 최소 신장 트리에 포함
+    //  2) 사이클이 발생하는 경우 최소 신장 트리에 포함시키지 않음
+    // 3. 모든 간선에 대해 2번의 과정을 반복함
+    // 시간복잡도는 O(ElogE)
+    public static List<(int start, int end, int weight)> Kruskal(List<(int start, int end, int weight)> edges, int nodeCount)
+    {
+        // 간선 데이트를 오름차순으로 정렬
+        edges = edges.OrderBy(edge => edge.weight).ToList();
+        
+        // 부모 노드의 초기 값는 자신의 노드
+        var parents = new int[nodeCount];
+        for (var i = 0; i < parents.Length; i++)
+            parents[i] = i;
+        
+        var result = new List<(int start, int end, int weight)>();
+
+        foreach (var (start, end, weight) in edges)
+        {
+            var startParent = FindParent(parents, start);
+            var endParent = FindParent(parents, end);
+
+            if (startParent == endParent)
+                continue;
+            
+            result.Add((start,end, weight));
+            Union(parents, startParent, endParent);
+        }
+
+        return result;
+    }
+    
+    // 서로소 집합 자료구조 : 나누어진 원소들의 데이터를 처리하기 위한 자료구조
+    // 합집합과 찾기 연산을 지원
+    // 합치기 : 두 개의 원소가 포함된 집합을 하나의 집합으로 합치는 연산
+    // 찾기 : 특정한 원소가 속한 집합이 어떤 집합인지 알려주는 연산
+    // 알고리즘
+    // 1. 합집합 연산을 확인하여 서로 연결된 두 노드 A,B를 확인
+    //  1) A와 B의 루트노드 A', B'를 찾음
+    //  2) A'를 B'의 부모 노드로 설정
+    // 2. 모든 집합 연산을 처리할 때까지 1번의 과정을 반복함
+    // 사이클을 판별할 때 사용할 수 있음
+    // 1. 각 간선의 하나씩 확인하며 두 노드의 루트노드를 확인
+    // 1) 루트 노드가 서로 다르다면 두 노드에 대하여 합집합 연산을 수행
+    // 2) 루트 노드가 같다면 사이클이 발생한 것
+    // 2. 그래프에 포함되어 있는 모든 간선에 대하여 1번 과정을 반복
+    private static int FindParent(int[] parents, int n)
+    {
+        // 경로압축을 통해 부모 노드를 계속 갱신함
+        if (parents[n] != n)
+            parents[n] = FindParent(parents, parents[n]);
+
+        return parents[n];
+    }
+
+    private static void Union(int[] parents, int a, int b)
+    {
+        a = FindParent(parents, a);
+        b = FindParent(parents, b);
+
+        if (a < b)
+            parents[b] = a;
+        else
+            parents[a] = b;
+    }
+    #endregion Kruskal
+
+    #region TopologicalSort
+    // 위상정렬 : 사이클이 없는 방향 그래프의 모든 노드를 방향성에 거스리지 않도록 순서대로 나열
+    // 진입 차수 : 특정한 노드로 들어오는 간선의 개수
+    // 진출 차수 : 특정한 노드에서 나가는 간선의 개수
+    // 큐를 이용하는 위상 정렬 알고리즘
+    // 알고리즘
+    // 1. 진입 차수가 0인 모든 노드를 큐에 넣음
+    // 2. 큐가 빌 때까지 다음의 과정을 반복
+    //  1) 큐에서 원소를 꺼내 해당 노드에서 나가는 간선을 그래프에서 제거
+    //  2) 새롭게 진입 차수가 0이 된 노드를 큐 넣음
+    // 모든 원소를 방문하기 전에 큐가 빈다면 사이클이 존재 
+    public static List<int> TopologicalSort(int nodeCount, List<(int, int)> edges)
+    {
+        // 방문 결과를 넣을 수 있는 리스트
+        var result = new List<int>();
+        // 진입 차수를 관리하는 데이터
+        var dicIndegree = new Dictionary<int, int>();
+        // 시작 노드와 연결된 노드를 관리
+        var dicNeighbor = new Dictionary<int, List<int>>();
+
+        // 모든 노드의 진입 차수를 0으로 설정
+        for (int i = 0; i < nodeCount; i++)
+            dicIndegree.TryAdd(i, 0);
+        
+        foreach (var (start, end) in edges)
+        {
+            dicIndegree[end]++;
+            
+            if (!dicNeighbor.ContainsKey(start))
+                dicNeighbor.Add(start, new List<int>());
+            
+            dicNeighbor[start].Add(end);
+        }
+        
+        // 진입 차수가 0인 노드를 큐에 넣음
+        var queue = new Queue<int>();
+        foreach (var (node, indegree) in dicIndegree)
+        {
+            if (indegree == 0)
+                queue.Enqueue(node);
+        }
+
+        while (queue.Count > 0)
+        {
+            var node = queue.Dequeue();
+            result.Add(node);
+
+            if (!dicNeighbor.TryGetValue(node, out var list)) 
+                continue;
+            
+            foreach (var end in list)
+            {
+                if (!dicIndegree.ContainsKey(end))
+                    continue;
+                
+                dicIndegree[end]--;
+                if (dicIndegree[end] == 0)
+                    queue.Enqueue(end);
+            }
+        }
+
+        return result;
+    }
+    #endregion
+
+    #region Bellman-Ford
+    // 벨만 포드 알고리즘은 음의 간선이 포함된 상태에서, 출발노드에서 다른 모든 노드까지 가는 최단 거리를 구할 수 있음
+    // 알고리즘 
+    // 1. 출발 노드를 설정
+    // 2. 최단 거리 테이블을 초기화
+    // 3. 다음의 과정은 n-1번 반복
+    //  1) 전체 간선 E개를 하나씩 확인
+    //  2) 각 간선을 거쳐 다른 노드로 가는 비용을 계산하여 최단 거리 테이블을 갱신
+    // 음수 간선 순환이 발생하는지 체크하고 싶다면 3번의 과정을 수행, 최단 거리 테이블이 갱신 되면 음수 간선이 존재
+
+    #endregion Bellman-Ford
 }
